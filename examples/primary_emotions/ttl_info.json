@@ -1,0 +1,158 @@
+{
+    "happiness": {
+        "mean_scores": [
+            "1: mean of repre_read_scores_means: -0.8563892665255772",
+            "2: mean of repre_read_scores_means: -0.9586319026219103",
+            "3: mean of repre_read_scores_means: -0.5135210517847165",
+            "4: mean of repre_read_scores_means: -1.408153173261776",
+            "5: mean of repre_read_scores_means: -1.2633312370957206",
+            "6: mean of repre_read_scores_means: -0.7786133798131816",
+            "7: mean of repre_read_scores_means: -0.36603186866984916",
+            "8: mean of repre_read_scores_means: -0.5776482360273337",
+            "9: mean of repre_read_scores_means: -0.41265374979951497",
+            "10: mean of repre_read_scores_means: -0.9464122595482135"
+        ],
+        "max_scores": [
+            "1: max of repre_read_scores_means: 0.767341126078883",
+            "2: max of repre_read_scores_means: 0.697036277072934",
+            "3: max of repre_read_scores_means: 0.7687030462309336",
+            "4: max of repre_read_scores_means: -0.07129019059431858",
+            "5: max of repre_read_scores_means: 0.697036277072934",
+            "6: max of repre_read_scores_means: 0.8016087921001972",
+            "7: max of repre_read_scores_means: 0.697026087448765",
+            "8: max of repre_read_scores_means: 1.0181042256836708",
+            "9: max of repre_read_scores_means: 0.4259929224275626",
+            "10: max of repre_read_scores_means: 0.292145773768425"
+        ]
+    },
+    "sadness": {
+        "mean_scores": [
+            "1: mean of repre_read_scores_means: -2.035196562032321",
+            "2: mean of repre_read_scores_means: -2.802102608273904",
+            "3: mean of repre_read_scores_means: -2.534694910093754",
+            "4: mean of repre_read_scores_means: -2.7900628513943118",
+            "5: mean of repre_read_scores_means: -2.2465052950093374",
+            "6: mean of repre_read_scores_means: -2.302792940641439",
+            "7: mean of repre_read_scores_means: -2.3844097594457776",
+            "8: mean of repre_read_scores_means: -1.0657772997071076",
+            "9: mean of repre_read_scores_means: -1.6408228617507776",
+            "10: mean of repre_read_scores_means: -1.556135925840301"
+        ],
+        "max_scores": [
+            "1: max of repre_read_scores_means: -1.0789965255042682",
+            "2: max of repre_read_scores_means: -1.1091463460754125",
+            "3: max of repre_read_scores_means: -1.0415263094772131",
+            "4: max of repre_read_scores_means: -1.2497933947791655",
+            "5: max of repre_read_scores_means: -1.0362007851975086",
+            "6: max of repre_read_scores_means: -0.9122574707875267",
+            "7: max of repre_read_scores_means: -1.108380289031909",
+            "8: max of repre_read_scores_means: 1.29016528909023",
+            "9: max of repre_read_scores_means: -0.2995868484274699",
+            "10: max of repre_read_scores_means: -0.42406240662034506"
+        ]
+    },
+    "anger": {
+        "mean_scores": [
+            "1: mean of repre_read_scores_means: -1.3384794668410214",
+            "2: mean of repre_read_scores_means: -1.8997976203338625",
+            "3: mean of repre_read_scores_means: -0.982056687804604",
+            "4: mean of repre_read_scores_means: -2.082697411122708",
+            "5: mean of repre_read_scores_means: -0.9502713168324083",
+            "6: mean of repre_read_scores_means: -1.6353293385291845",
+            "7: mean of repre_read_scores_means: -1.2161610504020834",
+            "8: mean of repre_read_scores_means: -1.0403013037860944",
+            "9: mean of repre_read_scores_means: -1.40089395251941",
+            "10: mean of repre_read_scores_means: -1.4693196894442604"
+        ],
+        "max_scores": [
+            "1: max of repre_read_scores_means: 0.3000814356865027",
+            "2: max of repre_read_scores_means: -0.9695452382931342",
+            "3: max of repre_read_scores_means: 0.9923992596375637",
+            "4: max of repre_read_scores_means: -0.7396619766473006",
+            "5: max of repre_read_scores_means: 2.08162354825972",
+            "6: max of repre_read_scores_means: -0.7280899684350842",
+            "7: max of repre_read_scores_means: -0.10354246476139778",
+            "8: max of repre_read_scores_means: 1.3057303256235826",
+            "9: max of repre_read_scores_means: -0.05862011493016512",
+            "10: max of repre_read_scores_means: -0.39328434050810007"
+        ]
+    },
+    "fear": {
+        "mean_scores": [
+            "1: mean of repre_read_scores_means: 1.0983048115188303",
+            "2: mean of repre_read_scores_means: 1.4625833842736213",
+            "3: mean of repre_read_scores_means: 1.7192195597247322",
+            "4: mean of repre_read_scores_means: 0.5313343626184341",
+            "5: mean of repre_read_scores_means: 1.622740054558385",
+            "6: mean of repre_read_scores_means: 1.1577045780599318",
+            "7: mean of repre_read_scores_means: 1.0494208241164449",
+            "8: mean of repre_read_scores_means: 0.6498736898987912",
+            "9: mean of repre_read_scores_means: 1.5683605448454299",
+            "10: mean of repre_read_scores_means: 0.7429844789276348"
+        ],
+        "max_scores": [
+            "1: max of repre_read_scores_means: 2.1815455788985276",
+            "2: max of repre_read_scores_means: 2.4029364499430628",
+            "3: max of repre_read_scores_means: 3.3381504379690456",
+            "4: max of repre_read_scores_means: 1.5566325766535907",
+            "5: max of repre_read_scores_means: 5.240113124728967",
+            "6: max of repre_read_scores_means: 2.0567590131018405",
+            "7: max of repre_read_scores_means: 2.1051465219412093",
+            "8: max of repre_read_scores_means: 2.4897209994303875",
+            "9: max of repre_read_scores_means: 2.2655451825031867",
+            "10: max of repre_read_scores_means: 1.710025472709766"
+        ]
+    },
+    "disgust": {
+        "mean_scores": [
+            "1: mean of repre_read_scores_means: -0.8223428677284633",
+            "2: mean of repre_read_scores_means: -1.1485582457010959",
+            "3: mean of repre_read_scores_means: -0.6346127969723496",
+            "4: mean of repre_read_scores_means: -1.813600590380613",
+            "5: mean of repre_read_scores_means: -0.6797124090691364",
+            "6: mean of repre_read_scores_means: -1.1237859707253204",
+            "7: mean of repre_read_scores_means: -1.1975174544712517",
+            "8: mean of repre_read_scores_means: -0.9921768827378774",
+            "9: mean of repre_read_scores_means: -0.8216165619711273",
+            "10: mean of repre_read_scores_means: -1.089076693195074"
+        ],
+        "max_scores": [
+            "1: max of repre_read_scores_means: 0.35212577420931596",
+            "2: max of repre_read_scores_means: 0.2736809857380696",
+            "3: max of repre_read_scores_means: 0.9313279444781634",
+            "4: max of repre_read_scores_means: -0.32445972078503704",
+            "5: max of repre_read_scores_means: 1.4181568898165073",
+            "6: max of repre_read_scores_means: 0.4350315100298478",
+            "7: max of repre_read_scores_means: 0.27398365621383375",
+            "8: max of repre_read_scores_means: 1.015920576854394",
+            "9: max of repre_read_scores_means: 0.8242789832755733",
+            "10: max of repre_read_scores_means: 0.29157337333815986"
+        ]
+    },
+    "surprise": {
+        "mean_scores": [
+            "1: mean of repre_read_scores_means: -4.815561522272759",
+            "2: mean of repre_read_scores_means: -6.063654493518138",
+            "3: mean of repre_read_scores_means: -5.553157548398777",
+            "4: mean of repre_read_scores_means: -6.251300900370832",
+            "5: mean of repre_read_scores_means: -6.089689152919802",
+            "6: mean of repre_read_scores_means: -5.434324482200844",
+            "7: mean of repre_read_scores_means: -6.2256103603594575",
+            "8: mean of repre_read_scores_means: -4.156359890111399",
+            "9: mean of repre_read_scores_means: -3.8925587508532926",
+            "10: mean of repre_read_scores_means: -4.570903235452062"
+        ],
+        "max_scores": [
+            "1: max of repre_read_scores_means: -3.0975610707074597",
+            "2: max of repre_read_scores_means: -4.70584325836255",
+            "3: max of repre_read_scores_means: -2.634579957080766",
+            "4: max of repre_read_scores_means: -4.966274630194769",
+            "5: max of repre_read_scores_means: -3.4506248078989583",
+            "6: max of repre_read_scores_means: -2.4727895298065286",
+            "7: max of repre_read_scores_means: -4.704651852257741",
+            "8: max of repre_read_scores_means: -0.7986846186029606",
+            "9: max of repre_read_scores_means: -0.2144359686674598",
+            "10: max of repre_read_scores_means: -1.7989138671904443"
+        ]
+    }
+}

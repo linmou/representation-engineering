@@ -1,14 +1,18 @@
+from dataclasses import dataclass
 from typing import List, Union, Optional
 from transformers import Pipeline
 import torch
 import numpy as np
 from .rep_readers import DIRECTION_FINDERS, RepReader
+from .rep_reading_pipeline import RepReadingPipeline
 
-class RepReadingPipeline(Pipeline):
+class RepReadingNProbCalcPipeline(RepReadingPipeline):
 
-    def __init__(self, **kwargs):
+    def __init__(self, user_tag, assistant_tag, **kwargs):
         super().__init__(**kwargs)
-
+        self.user_tag = user_tag
+        self.assistant_tag = assistant_tag
+ 
     def _get_hidden_states(
             self, 
             outputs,
@@ -22,9 +26,8 @@ class RepReadingPipeline(Pipeline):
         hidden_states_layers = {}
         for layer in hidden_layers:
             hidden_states = outputs['hidden_states'][layer]
-            hidden_states =  hidden_states[:, rep_token, :].detach()
-            if hidden_states.dtype == torch.bfloat16:
-                hidden_states = hidden_states.float()
+            hidden_states =  hidden_states[:, rep_token, :]
+            # hidden_states_layers[layer] = hidden_states.cpu().to(dtype=torch.float32).detach().numpy()
             hidden_states_layers[layer] = hidden_states.detach()
 
         return hidden_states_layers
@@ -53,20 +56,103 @@ class RepReadingPipeline(Pipeline):
         forward_params['which_hidden_states'] = which_hidden_states
         
         return preprocess_params, forward_params, postprocess_params
- 
+   
     def preprocess(
             self, 
-            inputs: Union[str, List[str], List[List[str]]],
+            inputs: Union[tuple, str],
             **tokenizer_kwargs):
 
         if self.image_processor:
             return self.image_processor(inputs, add_end_of_utterance_token=False, return_tensors="pt")
+        
         return self.tokenizer(inputs, return_tensors=self.framework, **tokenizer_kwargs)
+        # if isinstance(inputs, str): # to get repre_reader
+        #     return self.tokenizer(inputs, return_tensors=self.framework, **tokenizer_kwargs)
+        
+        # assert type(inputs) == tuple, f"inputs must be a tuple or string, but got {type(inputs)}"
+        # question, answer = inputs
+        # ttl_text = f"{question.strip()}: {answer.strip()}" 
+        
+        # return  self.tokenizer(ttl_text, return_tensors=self.framework, **tokenizer_kwargs)
+
 
     def postprocess(self, outputs):
+        if 'logits' not in outputs: return outputs
+        assert outputs['input_ids'].shape[0] == 1, "Batch size must be 1"
+        
+        if all(sp_tk in self.tokenizer.special_tokens_map['additional_special_tokens'] for sp_tk in [self.user_tag, self.assistant_tag]):
+            assistant_tag_pos = np.where(outputs['input_ids'].numpy()==self.tokenizer.encode(self.assistant_tag,add_special_tokens=False)[0]) # (array([0,1]), array([39,38]))
+            # check that every sample in the batch has and only has one assistant_tag_pos
+            assert np.unique(assistant_tag_pos[0]) == assistant_tag_pos[0], f"Batch must have only one assistant tag,  assistant_tag_pos {assistant_tag_pos} "
+            first_diff_positions = [ pos+1 for pos in assistant_tag_pos[1].tolist()]
+        else:
+            meaningfull_input_ids = outputs['input_ids'].flatten()[-outputs['attention_mask'].sum():]
+            raw_texts = self.tokenizer.decode(meaningfull_input_ids, skip_special_tokens=True)
+            query, ans = raw_texts.split(self.assistant_tag,1)
+            query_input_ids = self.tokenizer(query, return_tensors="pt")['input_ids']
+            assert torch.allclose(query_input_ids[0][:4], meaningfull_input_ids[:4]), "Prompt does not match at the beginning"
+        
+            first_diff_positions = self.find_first_difference(query_input_ids, outputs['input_ids'])
+            
+        ans_probabilities, ans_ids = self.calculate_sentence_probability(outputs['logits'], outputs['input_ids'], first_diff_positions)
+        outputs['ans_probabilities'] = ans_probabilities
+        outputs['ans_ids'] = ans_ids
+        
         return outputs
 
-    def _forward(self, model_inputs, rep_token, hidden_layers, rep_reader=None, component_index=0, which_hidden_states=None, pad_token_id=None):
+    def find_first_difference(self, input_ids, full_input_ids):
+        batch_size = input_ids.size(0)
+        assert batch_size == full_input_ids.size(0), "Batch sizes must match"
+        first_diff_positions = []
+        
+        for batch_id in range(batch_size):
+            input_ids_flat = input_ids[batch_id].flatten()
+            full_input_ids_flat = full_input_ids[batch_id].flatten()
+            
+            # Consider the paddings
+            input_ids_mask = input_ids_flat != self.tokenizer.pad_token_id
+            full_input_ids_mask = full_input_ids_flat != self.tokenizer.pad_token_id
+            
+            input_ids_flat = input_ids_flat[input_ids_mask]
+            full_input_ids_flat = full_input_ids_flat[full_input_ids_mask]
+            
+            min_length = min(len(input_ids_flat), len(full_input_ids_flat))
+            
+            for i in range(min_length):
+                if input_ids_flat[i] != full_input_ids_flat[i]:
+                    first_diff_positions.append(i + (full_input_ids_mask==0).sum().item())
+                    break
+            else:
+                first_diff_positions.append(len(input_ids_flat))  # No difference found
+
+        assert len(first_diff_positions) == batch_size, "Must find a position for each item in batch"
+        return first_diff_positions   
+    
+    def calculate_sentence_probability(self,logits, full_input_ids, start_positions):
+        batch_probabilities, batch_ans_ids = [],[]
+        for batch_idx in range(len(logits)):
+            probabilities = []
+            start_pos = start_positions[batch_idx]
+            for i in range(start_pos, full_input_ids.shape[1]-1):
+                next_token_logits = logits[batch_idx, i, :]
+                next_token_probs = torch.softmax(next_token_logits, dim=0)
+                target_token_id = full_input_ids[batch_idx, i + 1]
+                if target_token_id == self.tokenizer.pad_token_id:
+                    break  # Stop at padding
+                target_token_prob = next_token_probs[target_token_id].item()
+                probabilities.append(target_token_prob)
+    
+            assert len(probabilities) > 0, f"No probabilities calculated for prompt {batch_idx}"
+            non_zero_probs = [p for p in probabilities if p != 0]
+            sentence_prob = torch.prod(torch.tensor(non_zero_probs)).item()
+            ans_ids = full_input_ids[batch_idx, start_pos:]
+            batch_probabilities.append((sentence_prob, probabilities))
+            batch_ans_ids.append(ans_ids)
+            
+        assert len(batch_probabilities) == len(logits), "Must have results for each prompt"
+        return batch_probabilities, batch_ans_ids
+
+    def _forward(self, model_inputs,  hidden_layers, rep_token=None,rep_reader=None, component_index=0, which_hidden_states=None, pad_token_id=None):
         """
         Args:
         - which_hidden_states (str): Specifies which part of the model (encoder, decoder, or both) to compute the hidden states from. 
@@ -74,6 +160,9 @@ class RepReadingPipeline(Pipeline):
         Return: 
         - hidden_states (dict): A dictionary with keys as layer numbers and values as rep_token's projection at PCA direction
         """
+        if rep_token is None:
+            rep_token = list(range(model_inputs['input_ids'].size(1)))
+        
         # get model hidden states and optionally transform them with a RepReader
         with torch.no_grad():
             if hasattr(self.model, "encoder") and hasattr(self.model, "decoder"):
@@ -86,7 +175,16 @@ class RepReadingPipeline(Pipeline):
         if rep_reader is None:
             return hidden_states
         
-        return rep_reader.transform(hidden_states, hidden_layers, component_index)
+        layer2rep_trans = rep_reader.transform(hidden_states, hidden_layers, component_index)
+        return_dict = {
+            'logits': outputs.logits,
+            'input_ids': model_inputs['input_ids'],
+            'attention_mask': model_inputs['attention_mask'],
+        }
+        return_dict.update(layer2rep_trans)
+        
+        return return_dict
+        
 
 
     def _batched_string_to_hiddens(self, train_inputs, rep_token, hidden_layers, batch_size, which_hidden_states, **tokenizer_args):

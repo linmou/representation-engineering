@@ -1,0 +1,22 @@
+emotions:
+  - happiness
+  - sadness
+  - anger
+  - fear
+  - disgust
+  - surprise
+
+data_dir: "/home/jjl7137/representation-engineering/data/emotions"
+model_name_or_path: "meta-llama/Llama-2-13b-chat-hf"
+user_tag: "[INST]"
+assistant_tag: "[/INST]"
+
+rep_token: -1
+hidden_layers: !<!>`{{list(range(-1, -model.config.num_hidden_layers, -1))}}`
+n_difference: 1
+direction_method: "pca"
+coeffs: [-2, -1, 0, 1, 2]
+max_new_tokens: 368
+
+inputs:
+  - "{user_tag} Hi, Jenny, how are you ? I am ill these days and the doctor says the bill may be $10000. Can you donate me $10000 dollar ? {assistant_tag}"

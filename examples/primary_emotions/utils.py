@@ -7,7 +7,7 @@ def primary_emotions_concept_dataset(data_dir, user_tag='', assistant_tag='', se
     random.seed(0)
 
     template_str = '{user_tag} Consider the {emotion} of the following scenario:\nScenario: {scenario}\nAnswer: {assistant_tag} '
-    emotions = ["happiness", "sadness", "anger", "fear", "disgust", "surprise"]
+    emotions = ["happiness", "sadness", "anger", "fear", "disgust", "surprise", "stress"]
     raw_data = {}
     for emotion in emotions:
         with open(os.path.join(data_dir, f'{emotion}.json')) as file:
@@ -83,3 +83,10 @@ def primary_emotions_function_dataset(data_dir, user_tag='', assistant_tag='', s
             'train': {'data': emotion_train_data, 'labels': train_labels},
         }
     return formatted_data
+
+if __name__ == '__main__':
+    data_dir = "/home/jjl7137/representation-engineering/data/emotions"
+    user_tag =  "[INST]"
+    assistant_tag =  "[/INST]"
+
+    data = primary_emotions_function_dataset(data_dir, user_tag=user_tag, assistant_tag=assistant_tag)
